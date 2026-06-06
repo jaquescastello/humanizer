@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Send, Sparkles, ChevronDown, Loader2, Search, RefreshCw, HelpCircle, FileText, X } from 'lucide-react';
+import HumanizerV2 from './HumanizerV2';
 
 const DEFAULT_MODEL = 'google/gemini-3-flash-preview';
 const DEFAULT_QUIRKS_MODEL = 'x-ai/grok-4.20';
@@ -265,6 +266,9 @@ function saveSession(state: SessionState) {
 }
 
 function App() {
+  const [version, setVersion] = useState<'v1' | 'v2'>(() => {
+    try { return (localStorage.getItem('humanizer_version') as 'v1' | 'v2') || 'v1'; } catch { return 'v1'; }
+  });
   const saved = useRef(loadSession());
   const [models, setModels] = useState<ModelInfo[]>([]);
   const [modelsLoading, setModelsLoading] = useState(true);
@@ -522,16 +526,34 @@ function App() {
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col">
       {/* Header */}
-      <header className="border-b border-neutral-800 px-6 py-3 flex items-center shrink-0">
+      <header className="border-b border-neutral-800 px-6 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-7 h-7 rounded-lg bg-sky-500 flex items-center justify-center">
             <Sparkles size={14} className="text-white" />
           </div>
           <span className="font-semibold text-base tracking-tight">Humanizer</span>
         </div>
+        <div className="flex items-center bg-neutral-800 rounded-lg p-0.5 border border-neutral-700">
+          <button
+            onClick={() => { setVersion('v1'); localStorage.setItem('humanizer_version', 'v1'); }}
+            className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+              version === 'v1' ? 'bg-sky-600 text-white' : 'text-neutral-400 hover:text-neutral-200'
+            }`}
+          >
+            v1 Pipeline
+          </button>
+          <button
+            onClick={() => { setVersion('v2'); localStorage.setItem('humanizer_version', 'v2'); }}
+            className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+              version === 'v2' ? 'bg-sky-600 text-white' : 'text-neutral-400 hover:text-neutral-200'
+            }`}
+          >
+            v2 Turing
+          </button>
+        </div>
       </header>
 
-      {/* Main layout */}
+      {version === 'v2' ? <HumanizerV2 /> : (
       <div className="flex flex-1 overflow-hidden">
         {/* Content area */}
         <div className="flex-1 flex flex-col overflow-hidden p-6">
@@ -936,6 +958,7 @@ function App() {
           </div>
         </div>
       </div>
+      )}
 
       {/* Layer Log Modal */}
       {showLog && (
