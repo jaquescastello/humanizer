@@ -337,6 +337,8 @@ STRUCTURAL TELLS (human signals):
 - Missing or weak transitions between paragraphs
 
 RED FLAGS FOR AI (presence = likely AI):
+- Impeccable grammar, punctuation, capitalization and spelling
+- Use of unusual punctuation marks (em-dashes or semicolon)
 - Phrases like "it's important to note," "in conclusion," "delve into," "navigate," "tapestry," "landscape," "leverage," "nuanced"
 - Excessive hedging and balanced "on the other hand" structures
 - Generic platitudes and safe, diplomatic framing
